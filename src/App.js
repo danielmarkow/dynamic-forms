@@ -17,9 +17,13 @@ function App() {
     }
   });
 
-  const [config, setConfig] = useState({
+  const configDefaultValue = {
+    inputName: "",
     inputType : "text",
-  });
+    inputLabel : "",
+  };
+
+  const [config, setConfig] = useState(configDefaultValue);
  
   const onChange = (event) => {
     setInputFields(
@@ -47,7 +51,8 @@ function App() {
       type : config.inputType,
       label : config.inputLabel,
       value : "",
-    }})
+    }});
+    setConfig(configDefaultValue);
   };
 
   return (
@@ -56,14 +61,19 @@ function App() {
         <h2>configure and create input field</h2>
         <div>
           <label htmlFor="inputName">name</label>
-          <input id="inputName" type="text" onChange={onChangeConfig} />
+          <input 
+            id="inputName" 
+            type="text" 
+            onChange={onChangeConfig} 
+            value={config.inputName}
+          />
         </div>
         <div>
           <label htmlFor="inputType">type</label>
           <select 
             id="inputType" 
-            defaultValue={"text"} 
             onChange={onChangeConfig}
+            value={config.inputType}
           >
             <option value="text">text</option>
             <option value="email">email</option>
@@ -71,7 +81,12 @@ function App() {
         </div>
         <div>
           <label htmlFor="inputLabel">label</label>
-          <input id="inputLabel" type="text" onChange={onChangeConfig} />
+          <input 
+            id="inputLabel" 
+            type="text" 
+            onChange={onChangeConfig} 
+            value={config.inputLabel}
+          />
         </div>
         <div>
           <button type="submit">+ input</button>
