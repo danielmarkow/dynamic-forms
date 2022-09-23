@@ -1,4 +1,5 @@
 import {useState} from "react";
+import DynInput from "./components/DynInput";
 
 function App() {
   const [inputFields, setInputFields] = useState({
@@ -34,18 +35,7 @@ function App() {
     <>
       <hr />
       <form onSubmit={onSubmit}>
-        {Object.keys(inputFields).map((k) => 
-          <div key={k}>
-            <label htmlFor={k}>{inputFields[k].label}</label>
-            <input  
-              id={k} 
-              name={inputFields[k].name}
-              type={inputFields[k].type}
-              value={inputFields[k].value}
-              onChange={onChange}
-            /> 
-          </div>
-        )}
+        <DynInput inputFields={inputFields} onChange={onChange} />
         <button type="submit">submit</button>
       </form>
     </>
