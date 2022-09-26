@@ -1,5 +1,6 @@
 import {useState} from "react";
 import DynInput from "./components/DynInput";
+import {object, string} from "yup";
 
 function App() {
   const [inputFields, setInputFields] = useState({
@@ -16,6 +17,12 @@ function App() {
       value: "",
     }
   });
+
+  const configSchema = object({
+    inputName: string().min(5).required(),
+    inputType: string().required(),
+    inputLabel: string().min(5).required(),
+  })
 
   const configDefaultValue = {
     inputName: "",
@@ -40,12 +47,17 @@ function App() {
   };
 
   const onChangeConfig = (event) => {
-    console.log(event.target.id);
     setConfig({...config, [event.target.id]: event.target.value});
   };
 
-  const onChangeSubmit = (event) => {
+  const onSubmitConfig = (event) => {
     event.preventDefault();
+    try {
+      const valRes = configSchema.validateSync(config, {abortEarly: false});
+    } catch (err) {
+     err.inner.forEach((e) => console.log(e.message, e.path))
+
+    }
     setInputFields({...inputFields, [config.inputName] : {
       name : config.inputName,
       type : config.inputType,
@@ -57,7 +69,7 @@ function App() {
 
   return (
     <>
-      <form onSubmit={onChangeSubmit}>
+      <form onSubmit={onSubmitConfig}>
         <h2>configure and create input field</h2>
         <div>
           <label htmlFor="inputName">name</label>
