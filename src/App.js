@@ -31,6 +31,7 @@ function App() {
   };
 
   const [config, setConfig] = useState(configDefaultValue);
+  const [configError, setConfigError] = useState({});
  
   const onChange = (event) => {
     setInputFields(
@@ -54,17 +55,23 @@ function App() {
     event.preventDefault();
     try {
       const valRes = configSchema.validateSync(config, {abortEarly: false});
-    } catch (err) {
-     err.inner.forEach((e) => console.log(e.message, e.path))
 
-    }
-    setInputFields({...inputFields, [config.inputName] : {
-      name : config.inputName,
-      type : config.inputType,
-      label : config.inputLabel,
-      value : "",
-    }});
-    setConfig(configDefaultValue);
+      setInputFields({...inputFields, [config.inputName] : {
+          name : config.inputName,
+          type : config.inputType,
+          label : config.inputLabel,
+          value : "",
+        }});
+
+      setConfig(configDefaultValue);
+    } catch (err) {
+      err.inner.forEach((e) => {
+       console.log(e.path, " - ", e.message);
+       setConfigError({...configError, [e.path]: e.message});
+       // TODO figure out why only one error is added to the state variable
+       console.log(configError);
+     });
+    };
   };
 
   return (
