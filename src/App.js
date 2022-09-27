@@ -31,7 +31,11 @@ function App() {
   };
 
   const [config, setConfig] = useState(configDefaultValue);
-  const [configError, setConfigError] = useState({});
+  const [configError, setConfigError] = useState({
+    inputName: "",
+    inputType: "",
+    inputLabel: "",
+  });
  
   const onChange = (event) => {
     setInputFields(
@@ -53,9 +57,8 @@ function App() {
 
   const onSubmitConfig = (event) => {
     event.preventDefault();
-    try {
-      const valRes = configSchema.validateSync(config, {abortEarly: false});
 
+    configSchema.validate(config, {abortEarly: false}).then(() => {
       setInputFields({...inputFields, [config.inputName] : {
           name : config.inputName,
           type : config.inputType,
@@ -64,14 +67,14 @@ function App() {
         }});
 
       setConfig(configDefaultValue);
-    } catch (err) {
-      err.inner.forEach((e) => {
-       console.log(e.path, " - ", e.message);
-       setConfigError({...configError, [e.path]: e.message});
-       // TODO figure out why only one error is added to the state variable
-       console.log(configError);
-     });
-    };
+    }).catch((err) => {
+      let errLength = err.inner.length;
+      let newConfigErrorState = {};
+      for (let i = 0; i < errLength; i++) {
+        newConfigErrorState = {...newConfigErrorState, [err.inner[i].path]: err.inner[i].message};
+      }
+      setConfigError(newConfigErrorState);
+    });
   };
 
   return (
@@ -86,6 +89,7 @@ function App() {
             onChange={onChangeConfig} 
             value={config.inputName}
           />
+          <p>{configError?.inputName}</p>
         </div>
         <div>
           <label htmlFor="inputType">type</label>
@@ -97,6 +101,7 @@ function App() {
             <option value="text">text</option>
             <option value="email">email</option>
           </select>
+          <p>{configError?.inputType}</p>
         </div>
         <div>
           <label htmlFor="inputLabel">label</label>
@@ -106,6 +111,7 @@ function App() {
             onChange={onChangeConfig} 
             value={config.inputLabel}
           />
+          <p>{configError?.inputLabel}</p>
         </div>
         <div>
           <button type="submit">+ input</button>
