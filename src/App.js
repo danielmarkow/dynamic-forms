@@ -1,6 +1,9 @@
 import {useState} from "react";
-import DynInput from "./components/DynInput";
+
 import {object, string} from "yup";
+
+import DynInput from "./components/DynInput";
+import ConfigForm from "./components/ConfigForm";
 
 function App() {
   const [inputFields, setInputFields] = useState({
@@ -79,47 +82,10 @@ function App() {
 
   return (
     <>
-      <form onSubmit={onSubmitConfig}>
-        <h2>configure and create input field</h2>
-        <div>
-          <label htmlFor="inputName">name</label>
-          <input 
-            id="inputName" 
-            type="text" 
-            onChange={onChangeConfig} 
-            value={config.inputName}
-          />
-          <p>{configError?.inputName}</p>
-        </div>
-        <div>
-          <label htmlFor="inputType">type</label>
-          <select 
-            id="inputType" 
-            onChange={onChangeConfig}
-            value={config.inputType}
-          >
-            <option value="text">text</option>
-            <option value="email">email</option>
-          </select>
-          <p>{configError?.inputType}</p>
-        </div>
-        <div>
-          <label htmlFor="inputLabel">label</label>
-          <input 
-            id="inputLabel" 
-            type="text" 
-            onChange={onChangeConfig} 
-            value={config.inputLabel}
-          />
-          <p>{configError?.inputLabel}</p>
-        </div>
-        <div>
-          <button type="submit">+ input</button>
-        </div>
-      </form>
-      <hr />
+      <ConfigForm onSubmit={onSubmitConfig} onChange={onChangeConfig} config={config} configError={configError}/>
+      <hr/>
       <form onSubmit={onSubmit}>
-        <DynInput inputFields={inputFields} onChange={onChange} />
+        <DynInput inputFields={inputFields} onChange={onChange}/>
         <button type="submit">submit</button>
       </form>
     </>
