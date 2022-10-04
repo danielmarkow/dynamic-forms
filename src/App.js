@@ -5,7 +5,15 @@ import {object, string} from "yup";
 import DynInput from "./components/DynInput";
 import ConfigForm from "./components/ConfigForm";
 
+// --- Schema of dynamic Fields ---
+
+let dynSchemaConfig = {}
+let dynSchema = object(dynSchemaConfig);
+
+// ---
+
 function App() {
+  // inputFields data structure
   // username : {
   //   name : "username",
   //       type: "text",
@@ -26,9 +34,6 @@ function App() {
     inputType: string().required(),
     inputLabel: string().min(5).required(),
   });
-
-  let dynSchemaConfig = {};
-  let dynSchema = object(dynSchemaConfig);
 
   const configDefaultValue = {
     inputName: "",
@@ -63,13 +68,12 @@ function App() {
     let formValues = {};
     Object.entries(inputFields).forEach((entr) => formValues = {...formValues, [entr[0]]: entr[1].value});
 
-    // TODO figure out why validation shows valid when it clearly isn't
-    dynSchema.validate(formValues).then(() => {
+    dynSchema.validate(formValues, {abortEarly: false}).then(() => {
       console.log("valid");
     }).catch((err) => {
       console.log(err);
     });
-    // console.log(formValues);
+    console.log(JSON.stringify(formValues));
   };
 
   const onChangeConfig = (event) => {
@@ -91,8 +95,6 @@ function App() {
       // TODO replace example schema with actual
       dynSchemaConfig = {...dynSchemaConfig, [config.inputName]: string().min(5).required()};
       dynSchema = object(dynSchemaConfig);
-      console.log(dynSchemaConfig)
-      console.log(dynSchema)
 
       setConfig(configDefaultValue);
     }).catch((err) => {
